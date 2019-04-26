@@ -19,7 +19,7 @@ public:
 	// Wipes the screen clear so that it is ready to begin drawing.
 	void ClearScreen();
 
-	// Sets the colour that will be used to clear the sceen.
+	// Sets the colour that will be used to clear the screen.
 	void SetBackgroundColour(float r, float g, float b, float a = 1.0f);
 
 	// Show or hide the OS cursor.
