@@ -1,0 +1,6 @@
+﻿  Game2D.cpp
+  main.cpp
+  Player.cpp
+  Generating Code...
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Project2D.vcxproj -> C:\Users\Seth\Desktop\Seth's Work\aieBootstrap-2019beta\temp\Project2D\x64\Debug\Project2D.exe
