@@ -22,12 +22,22 @@ public:
 protected:
 	aie::Renderer2D*	m_2dRenderer;
 
-	// Example textures.
-	//aie::Texture*		m_texture;
-	//aie::Texture*		m_texture2;
+	//Textures
+	aie::Texture*		m_pRightArrowTexture;
+	aie::Texture*		m_pLeftArrowTexture;
+	aie::Texture*		m_pDownArrowTexture;
+	aie::Texture*		m_pUpArrowTexture;
+	aie::Texture*		m_pRightArrowFlashTexture;
+	aie::Texture*		m_pLeftArrowFlashTexture;
+	aie::Texture*		m_pDownArrowFlashTexture;
+	aie::Texture*		m_pUpArrowFlashTexture;
 	aie::Font*			m_font;
 
 	Sequence* m_pDirections;
 
 	int nSequenceIterator;
+	bool bIsRightFlashing;
+	bool bIsLeftFlashing;
+	bool bIsDownFlashing;
+	bool bIsUpFlashing;
 };
