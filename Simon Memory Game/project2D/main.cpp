@@ -28,3 +28,8 @@ int main()
 
 	return 0;
 }
+
+
+//Questions:
+//Where and how should I implement the menu?
+//Can I make m_pSequence still be able to use m_pSequence[index]? Use Dynamic Array Examples project for demo

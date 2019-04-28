@@ -21,8 +21,10 @@ void Sequence::AddDirection()
 
 bool Sequence::CheckDirection(int nSequenceIndex, int nDirectionIndex)
 {
-	return (m_pSequence[nSequenceIndex] == nDirectionIndex);
+	return (m_pSequence->Return(nSequenceIndex) == nDirectionIndex);
 }
 
-//Trying to get the pointer to the dynamic array to work. Need it to return the value at the index
-//Need to at a direction to index converter / enums
+int Sequence::SequenceCount()
+{
+	return m_pSequence->Count();
+}

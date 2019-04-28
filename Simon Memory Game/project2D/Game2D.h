@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "Renderer2D.h"
+#include "Sequence.h"
 
 class Player;
 
@@ -14,14 +15,19 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Draw();
 
+	//Converts the keyboard input codes of arrow keys into numbers 1-4
+	//Not sure if this is even needed
+	int GetDirectionIndex(int nInputCode);
+
 protected:
 	aie::Renderer2D*	m_2dRenderer;
 
 	// Example textures.
-	aie::Texture*		m_texture;
-	aie::Texture*		m_texture2;
+	//aie::Texture*		m_texture;
+	//aie::Texture*		m_texture2;
 	aie::Font*			m_font;
 
-	// Player.
-	Player* m_Player;
+	Sequence* m_pDirections;
+
+	int nSequenceIterator;
 };

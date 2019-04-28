@@ -168,6 +168,12 @@ public:
 		return m_pData[nIndex];
 	}
 
+	//Returns the value at the index so that pointers to a dynamic array can be used
+	T Return(int nIndex)
+	{
+		return m_pData[nIndex];
+	}
+
 private:
 	void Resize()
 	{

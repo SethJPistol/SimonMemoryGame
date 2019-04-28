@@ -4,8 +4,6 @@
 #include "Texture.h"
 #include "Font.h"
 #include "Input.h"
-//#include "Player.h"
-#include "Sequence.h"
 
 Game2D::Game2D(const char* title, int width, int height, bool fullscreen) : Game(title, width, height, fullscreen)
 {
@@ -17,11 +15,11 @@ Game2D::Game2D(const char* title, int width, int height, bool fullscreen) : Game
 	//m_texture2 = new aie::Texture("./textures/rock_large.png");
 	m_font = new aie::Font("./font/consolas.ttf", 24);
 
-	// Create a player object.
-	//m_Player = new Player();
-
 	//Create a new sequence
-	Sequence* pDirections = new Sequence();
+	m_pDirections = new Sequence();
+
+	//Set sequence count to 0
+	nSequenceIterator = 0;
 }
 
 Game2D::~Game2D()
@@ -43,10 +41,96 @@ void Game2D::Update(float deltaTime)
 {
 	aie::Input* input = aie::Input::GetInstance();
 
-	//temp for testing
-	if (input->IsKeyDown(aie::INPUT_KEY_UP))
+	//If right arrow key, check if correct
+	if (input->WasKeyPressed(aie::INPUT_KEY_RIGHT))
 	{
-		
+		bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, RIGHT);
+
+		if (bCorrectDirection)
+		{
+			++nSequenceIterator;
+
+			//If end of the sequence
+			if (nSequenceIterator >= m_pDirections->SequenceCount())
+			{
+				//Reset the iterator
+				nSequenceIterator = 0;
+				//Start the new sequence flashes
+			}
+		}
+		else
+		{
+			//Gameover
+		}
+	}
+
+	//If left arrow key, check if correct
+	if (input->WasKeyPressed(aie::INPUT_KEY_LEFT))
+	{
+		bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, LEFT);
+
+		if (bCorrectDirection)
+		{
+			++nSequenceIterator;
+
+			//If end of the sequence
+			if (nSequenceIterator >= m_pDirections->SequenceCount())
+			{
+				//Reset the iterator
+				nSequenceIterator = 0;
+				//Start the new sequence flashes
+			}
+		}
+		else
+		{
+			//Gameover
+		}
+	}
+
+	//If down arrow key, check if correct
+	if (input->WasKeyPressed(aie::INPUT_KEY_DOWN))
+	{
+		bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, DOWN);
+
+		if (bCorrectDirection)
+		{
+			++nSequenceIterator;
+
+			//If end of the sequence
+			if (nSequenceIterator >= m_pDirections->SequenceCount())
+			{
+				//Reset the iterator
+				nSequenceIterator = 0;
+				//Start the new sequence flashes
+			}
+		}
+		else
+		{
+			//Gameover
+		}
+	}
+
+	//If up arrow key, check if correct
+	if (input->WasKeyPressed(aie::INPUT_KEY_UP))
+	{
+		bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, UP);
+
+		if (bCorrectDirection)
+		{
+			++nSequenceIterator;
+
+			//If end of the sequence
+			if (nSequenceIterator >= m_pDirections->SequenceCount())
+			{
+				//Reset the iterator
+				nSequenceIterator = 0;
+				//Start the new sequence flashes
+			}
+		}
+		else
+		{
+			//Gameover
+		}
 	}
 	
 	// Exit the application if escape is pressed.
@@ -103,4 +187,13 @@ void Game2D::Draw()
 
 	// Done drawing sprites. Must be called at the end of the Draw().
 	m_2dRenderer->End();
+}
+
+int Game2D::GetDirectionIndex(int nInputCode)
+{
+	//Only allow arrow key codes
+	if (nInputCode > 261 && nInputCode < 266)
+		return nInputCode - 261;
+	else
+		return 0;
 }
