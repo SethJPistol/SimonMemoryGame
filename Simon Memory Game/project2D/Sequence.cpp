@@ -9,7 +9,8 @@ Sequence::Sequence()
 
 Sequence::~Sequence()
 {
-
+	delete m_pSequence;
+	m_pSequence = nullptr;
 }
 
 
@@ -21,10 +22,20 @@ void Sequence::AddDirection()
 
 bool Sequence::CheckDirection(int nSequenceIndex, int nDirectionIndex)
 {
-	return (m_pSequence->Return(nSequenceIndex) == nDirectionIndex);
+	return ((*m_pSequence)[nSequenceIndex] == nDirectionIndex);
 }
 
 int Sequence::SequenceCount()
 {
 	return m_pSequence->Count();
+}
+
+void Sequence::SequenceClear()
+{
+	m_pSequence->Clear();
+}
+
+int& Sequence::operator[](int nIndex)
+{
+	return (*m_pSequence)[nIndex];
 }

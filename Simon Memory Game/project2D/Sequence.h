@@ -17,9 +17,6 @@ public:
 	~Sequence();
 
 
-	
-
-
 	//Produces a number from 1-4 and adds it to the sequence
 	void AddDirection();
 
@@ -29,11 +26,15 @@ public:
 	//Returns how many directions are currently in the sequence
 	int SequenceCount();
 
+	//Deletes all directions from the sequence
+	void SequenceClear();
+
+	//Operator overloader so square brackets can be used for indexes
+	int& operator[](int nIndex);
+
 
 private:
 
-
 	//The array
 	DynamicArray<int>* m_pSequence;
-
 };

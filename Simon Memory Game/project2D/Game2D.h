@@ -15,10 +15,6 @@ public:
 	virtual void Update(float deltaTime);
 	virtual void Draw();
 
-	//Converts the keyboard input codes of arrow keys into numbers 1-4
-	//Not sure if this is even needed
-	int GetDirectionIndex(int nInputCode);
-
 protected:
 	aie::Renderer2D*	m_2dRenderer;
 
@@ -31,11 +27,15 @@ protected:
 	aie::Texture*		m_pLeftArrowFlashTexture;
 	aie::Texture*		m_pDownArrowFlashTexture;
 	aie::Texture*		m_pUpArrowFlashTexture;
-	aie::Font*			m_font;
+	aie::Font*			m_pFont;
 
 	Sequence* m_pDirections;
 
 	int nSequenceIterator;
+	float nTimer;
+	bool bIsSequenceFlashing;
+	bool bHasLost;
+
 	bool bIsRightFlashing;
 	bool bIsLeftFlashing;
 	bool bIsDownFlashing;
