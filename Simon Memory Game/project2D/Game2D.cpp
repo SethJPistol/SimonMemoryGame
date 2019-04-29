@@ -32,6 +32,9 @@ Game2D::Game2D(const char* title, int width, int height, bool fullscreen) : Game
 	bIsSequenceFlashing = true;
 	bHasLost = false;
 
+	nScore = 0;
+	nHighScore = 0;
+
 	bIsRightFlashing = false;
 	bIsLeftFlashing = false;
 	bIsDownFlashing = false;
@@ -154,6 +157,8 @@ void Game2D::Update(float deltaTime)
 						m_pDirections->AddDirection();
 						//Start the new sequence flashes here
 						bIsSequenceFlashing = true;
+						//Add to score
+						++nScore;
 					}
 				}
 				else
@@ -186,6 +191,8 @@ void Game2D::Update(float deltaTime)
 						m_pDirections->AddDirection();
 						//Start the new sequence flashes here
 						bIsSequenceFlashing = true;
+						//Add to score
+						++nScore;
 					}
 				}
 				else
@@ -218,6 +225,8 @@ void Game2D::Update(float deltaTime)
 						m_pDirections->AddDirection();
 						//Start the new sequence flashes here
 						bIsSequenceFlashing = true;
+						//Add to score
+						++nScore;
 					}
 				}
 				else
@@ -250,6 +259,8 @@ void Game2D::Update(float deltaTime)
 						m_pDirections->AddDirection();
 						//Start the new sequence flashes here
 						bIsSequenceFlashing = true;
+						//Add to score
+						++nScore;
 					}
 				}
 				else
@@ -259,6 +270,12 @@ void Game2D::Update(float deltaTime)
 				}
 			}
 		}
+	}
+
+	//Update the high score
+	if (nScore > nHighScore)
+	{
+		nHighScore = nScore;
 	}
 
 	//Restart the game if r is pressed
@@ -272,6 +289,7 @@ void Game2D::Update(float deltaTime)
 		bIsSequenceFlashing = true;
 		nTimer = 0.0f;
 		nSequenceIterator = 0;
+		nScore = 0;
 		m_pDirections->SequenceClear();
 		m_pDirections->AddDirection();
 	}
@@ -318,11 +336,18 @@ void Game2D::Draw()
 	//HUD text
 	float fWindowHeight = (float)application->GetWindowHeight();
 	char fps[32];
+	char score[3];
+	char highscore[3];
 	sprintf_s(fps, 32, "FPS: %i", application->GetFPS());
+	sprintf_s(score, 3, "%i", nScore);
+	sprintf_s(highscore, 3, "%i", nHighScore);
 	m_2dRenderer->DrawText2D(m_pFont, fps, 15.0f, fWindowHeight - 32.0f);
 	//m_2dRenderer->DrawText2D(m_pFont, "PRESS ANY KEY TO BEGIN", 65.0f, fWindowHeight - 64.0f);
-	m_2dRenderer->DrawText2D(m_pFont, "SCORE:", 325.0f, fWindowHeight - 125.0f);
-	m_2dRenderer->DrawText2D(m_pFont, "12", 350.0f, fWindowHeight - 150.0f);
+	m_2dRenderer->DrawText2D(m_pFont, "HIGH SCORE:", 290.0f, fWindowHeight - 150.0f);
+	m_2dRenderer->DrawText2D(m_pFont, highscore, 350.0f, fWindowHeight - 175.0f);
+	m_2dRenderer->DrawText2D(m_pFont, "SCORE:", 325.0f, fWindowHeight - 425.0f);
+	m_2dRenderer->DrawText2D(m_pFont, score, 350.0f, fWindowHeight - 450.0f);
+
 	if (bHasLost)
 	{
 		m_2dRenderer->DrawText2D(m_pFont, "YOU HAVE LOST", 112.0f, fWindowHeight - 75.0f);

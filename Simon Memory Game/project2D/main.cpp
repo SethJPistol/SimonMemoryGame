@@ -18,7 +18,7 @@ int main()
 	srand((unsigned int)time(0));
 
 	// Create the Application.
-	Game2D* game = new Game2D("AIE", 1280, 720, false);
+	Game2D* game = new Game2D("AIE", 450, 500, false);
 
 	// Run the game loop.
 	game->Run();
@@ -28,7 +28,3 @@ int main()
 
 	return 0;
 }
-
-
-//Questions:
-//Where and how should I implement the menu?

@@ -36,6 +36,9 @@ protected:
 	bool bIsSequenceFlashing;
 	bool bHasLost;
 
+	int nScore;
+	int nHighScore;
+
 	bool bIsRightFlashing;
 	bool bIsLeftFlashing;
 	bool bIsDownFlashing;
