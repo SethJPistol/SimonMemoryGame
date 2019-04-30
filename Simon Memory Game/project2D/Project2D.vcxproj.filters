@@ -24,6 +24,12 @@
     <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Sequence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game2D.h">
@@ -33,6 +39,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Sequence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Level.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

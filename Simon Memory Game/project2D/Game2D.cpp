@@ -335,18 +335,18 @@ void Game2D::Draw()
 	
 	//HUD text
 	float fWindowHeight = (float)application->GetWindowHeight();
-	char fps[32];
+	//char fps[32];
 	char score[3];
 	char highscore[3];
-	sprintf_s(fps, 32, "FPS: %i", application->GetFPS());
+	//sprintf_s(fps, 32, "FPS: %i", application->GetFPS());
 	sprintf_s(score, 3, "%i", nScore);
 	sprintf_s(highscore, 3, "%i", nHighScore);
-	m_2dRenderer->DrawText2D(m_pFont, fps, 15.0f, fWindowHeight - 32.0f);
+	//m_2dRenderer->DrawText2D(m_pFont, fps, 15.0f, fWindowHeight - 32.0f);
 	//m_2dRenderer->DrawText2D(m_pFont, "PRESS ANY KEY TO BEGIN", 65.0f, fWindowHeight - 64.0f);
-	m_2dRenderer->DrawText2D(m_pFont, "HIGH SCORE:", 290.0f, fWindowHeight - 150.0f);
-	m_2dRenderer->DrawText2D(m_pFont, highscore, 350.0f, fWindowHeight - 175.0f);
-	m_2dRenderer->DrawText2D(m_pFont, "SCORE:", 325.0f, fWindowHeight - 425.0f);
-	m_2dRenderer->DrawText2D(m_pFont, score, 350.0f, fWindowHeight - 450.0f);
+	m_2dRenderer->DrawText2D(m_pFont, "HIGH SCORE:", 290.0f, fWindowHeight - 50.0f);
+	m_2dRenderer->DrawText2D(m_pFont, highscore, 350.0f, fWindowHeight - 75.0f);
+	m_2dRenderer->DrawText2D(m_pFont, "SCORE:", 325.0f, fWindowHeight - 325.0f);
+	m_2dRenderer->DrawText2D(m_pFont, score, 350.0f, fWindowHeight - 350.0f);
 
 	if (bHasLost)
 	{
@@ -356,24 +356,24 @@ void Game2D::Draw()
 
 	//Arrow sprites
 	if (bIsRightFlashing)
-		m_2dRenderer->DrawSprite(m_pRightArrowFlashTexture, 325.0f, fWindowHeight - 300.0f);
+		m_2dRenderer->DrawSprite(m_pRightArrowFlashTexture, 325.0f, fWindowHeight - 200.0f);
 	else
-		m_2dRenderer->DrawSprite(m_pRightArrowTexture, 325.0f, fWindowHeight - 300.0f);
+		m_2dRenderer->DrawSprite(m_pRightArrowTexture, 325.0f, fWindowHeight - 200.0f);
 
 	if (bIsLeftFlashing)
-		m_2dRenderer->DrawSprite(m_pLeftArrowFlashTexture, 75.0f, fWindowHeight - 300.0f);
+		m_2dRenderer->DrawSprite(m_pLeftArrowFlashTexture, 75.0f, fWindowHeight - 200.0f);
 	else
-		m_2dRenderer->DrawSprite(m_pLeftArrowTexture, 75.0f, fWindowHeight - 300.0f);
+		m_2dRenderer->DrawSprite(m_pLeftArrowTexture, 75.0f, fWindowHeight - 200.0f);
 
 	if (bIsDownFlashing)
-		m_2dRenderer->DrawSprite(m_pDownArrowFlashTexture, 200.0f, fWindowHeight - 425.0f);
+		m_2dRenderer->DrawSprite(m_pDownArrowFlashTexture, 200.0f, fWindowHeight - 325.0f);
 	else
-		m_2dRenderer->DrawSprite(m_pDownArrowTexture, 200.0f, fWindowHeight - 425.0f);
+		m_2dRenderer->DrawSprite(m_pDownArrowTexture, 200.0f, fWindowHeight - 325.0f);
 
 	if (bIsUpFlashing)
-		m_2dRenderer->DrawSprite(m_pUpArrowFlashTexture, 200.0f, fWindowHeight - 175.0f);
+		m_2dRenderer->DrawSprite(m_pUpArrowFlashTexture, 200.0f, fWindowHeight - 75.0f);
 	else
-		m_2dRenderer->DrawSprite(m_pUpArrowTexture, 200.0f, fWindowHeight - 175.0f);
+		m_2dRenderer->DrawSprite(m_pUpArrowTexture, 200.0f, fWindowHeight - 75.0f);
 	
 	// Done drawing sprites. Must be called at the end of the Draw().
 	m_2dRenderer->End();

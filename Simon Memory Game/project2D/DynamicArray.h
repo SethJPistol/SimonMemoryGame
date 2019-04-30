@@ -6,6 +6,32 @@ template<typename T>
 class DynamicArray
 {
 public:
+
+	//List of all public functions:
+
+	//---------------------------------------------------------------------------------------
+	/*DynamicArray(int nInitialSize);	Constructor
+	~DynamicArray();					Destructor
+	DynamicArray(DynamicArray& array);	Copy constructor
+
+	void Insert(int nIndex, T data);	Add a new value one past the specified index location
+	void PushFront(T data);				Add a new value to the start of the list
+	void PushBack(T data);				Add a new value to the end of the list
+	T First();							Return the first element
+	T Last();							Return the last element
+	int Count();						Return how many elements exist in the list
+	void Erase(int nIndex);				Remove an element by its index
+	void Remove(int nValue);			Remove all elements with the matching value
+	void Clear();						Remove all elements from the list
+	void PopBack();						Remove the last element
+	void PopFront();					Remove the first element
+	bool Empty();						Return a bool, true if empty, false otherwise
+	void Print();						Print the whole array
+	int GetSize();						Return how many elements in the array
+	T& operator[](int nIndex);			Lets us use square brackets when using the array*/
+	//---------------------------------------------------------------------------------------
+
+
 	DynamicArray(int nInitialSize = 0)
 	{
 		int nSize = nInitialSize;
@@ -17,7 +43,11 @@ public:
 		m_nUsedCount = 0;
 	}
 
-	//Copy constructor
+	~DynamicArray()
+	{
+		delete[] m_pData;
+	}
+
 	DynamicArray(DynamicArray& array)
 	{
 		m_nTotalSize = array.m_nTotalSize;
@@ -29,68 +59,55 @@ public:
 		}
 	}
 
-	~DynamicArray()
-	{
-		delete[] m_pData;
-	}
 
-	//Add a new value to the start of the list
-	void PushFront(T data)
+
+	void Insert(int nIndex, T data)
 	{
 		++m_nUsedCount;
+		//Check if a resize is needed
 		Resize();
 
-		for (int i = m_nUsedCount - 1; i >= 0; --i)
+		//Shift any data after the insert point to the right by 1
+		for (int i = m_nUsedCount - 1; i >= nIndex; --i)
 		{
 			m_pData[i + 1] = m_pData[i];
 		}
-		m_pData[0] = data;
+
+		m_pData[nIndex] = data;
 	}
 
-	//Add a new value to the end of the list
+	void PushFront(T data)
+	{
+		Insert(0, data);
+	}
+
 	void PushBack(T data)
 	{
-		//Check for space
+		//Check if a resize is needed
 		Resize();
 
 		m_pData[m_nUsedCount] = data;
 		++m_nUsedCount;
 	}
 
-	//Add a new value one past the specified index location
-	void Insert(int nIndex, T data)
-	{
-		++m_nUsedCount;
-		Resize();
-
-		for (int i = m_nUsedCount - 1; i >= nIndex; --i)
-		{
-			m_pData[i + 1] = m_pData[i];
-		}
-		m_pData[nIndex] = data;
-	}
-
-	//Return the first element 
 	T First()
 	{
 		return m_pData[0];
 	}
 
-	//Return the last element
 	T Last()
 	{
 		return m_pData[m_nUsedCount - 1];
 	}
 
-	//Return how many elements exist in the list
 	int Count()
 	{
 		return m_nUsedCount;
 	}
 
-	//Remove an element by its index
 	void Erase(int nIndex)
 	{
+		//Shift any data after the erase point to the left by 1
 		for (int i = nIndex; i < m_nUsedCount; ++i)
 		{
 			m_pData[i] = m_pData[i + 1];
@@ -98,11 +115,10 @@ public:
 		--m_nUsedCount;
 	}
 
-	//Remove all elements with the matching value
 	void Remove(int nValue)
 	{
-		int nCurrentCount = m_nUsedCount;
-		for (int i = 0; i < nCurrentCount; ++i)
+		//Search for the value in the array
+		for (int i = 0; i < m_nUsedCount; ++i)
 		{
 			if (m_pData[i] == nValue)
 			{
@@ -112,15 +128,23 @@ public:
 		}
 	}
 
-	//Remove the last element
+	void Clear()
+	{
+		//Repeats until used count is 0
+		while (m_nUsedCount)
+		{
+			--m_nUsedCount;
+		}
+	}
+
 	void PopBack()
 	{
 		--m_nUsedCount;
 	}
 
-	//Remove the first element
 	void PopFront()
 	{
+		//Shift any data after the erase point to the left by 1
 		for (int i = 0; i < m_nUsedCount; ++i)
 		{
 			m_pData[i] = m_pData[i + 1];
@@ -128,26 +152,11 @@ public:
 		--m_nUsedCount;
 	}
 
-	//Return a bool, true if empty, false otherwise
 	bool Empty()
 	{
-		if (m_nUsedCount <= 0)
-			return true;
-		else
-			return false;
+		return m_nUsedCount <= 0;
 	}
 
-	//Remove all elements from the list
-	void Clear()
-	{
-		int nDeleteCount = m_nUsedCount;
-		for (int i = 0; i < nDeleteCount; ++i)
-		{
-			--m_nUsedCount;
-		}
-	}
-
-	//Print the whole array
 	void Print()
 	{
 		for (int i = 0; i < m_nUsedCount; ++i)
@@ -156,32 +165,27 @@ public:
 		}
 	}
 
-	
 	int GetSize()
 	{
 		return m_nUsedCount;
 	}
 
-	//Lets us use square brackets when using the array
 	T& operator[](int nIndex)
 	{
 		return m_pData[nIndex];
 	}
 
-	//Returns the value at the index so that pointers to a dynamic array can be used
-	T Return(int nIndex)
-	{
-		return m_pData[nIndex];
-	}
+	//-------------------------------------------------------------------------------------------
 
 private:
+
 	void Resize()
 	{
-		//Run out of space
+		//If out of space
 		if (m_nUsedCount >= m_nTotalSize)
 		{
 			T* pBiggerArray = new T[m_nTotalSize * 2];
-					//New array,	new array size,				source array	source array size
+			//New array,    new array size,			  source array	source array size
 			memcpy_s(pBiggerArray, sizeof(T) * m_nTotalSize * 2, m_pData, sizeof(T) * m_nTotalSize);
 			delete[] m_pData;
 

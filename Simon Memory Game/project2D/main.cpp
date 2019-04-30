@@ -11,19 +11,19 @@
 
 int main() 
 {
-	// Check for memeory leaks.
+	//Check for memeory leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
 	//Seed the randome number generator
 	srand((unsigned int)time(0));
 
-	// Create the Application.
-	Game2D* game = new Game2D("AIE", 450, 500, false);
+	//Create the Application
+	Game2D* game = new Game2D("AIE", 440, 500, false);
 
-	// Run the game loop.
+	//Run the game loop
 	game->Run();
 
-	// Clean up.
+	//Clean up
 	delete game;
 
 	return 0;

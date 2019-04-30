@@ -4,8 +4,6 @@
 #include "Renderer2D.h"
 #include "Sequence.h"
 
-class Player;
-
 class Game2D : public aie::Game
 {
 public:

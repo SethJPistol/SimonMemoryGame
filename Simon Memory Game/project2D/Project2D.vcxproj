@@ -171,12 +171,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Level.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Menu.cpp" />
     <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Sequence.cpp" />
     <ClCompile Include="Game2D.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\project2D\DynamicArray.h" />
+    <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Level.h" />
+    <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Menu.h" />
     <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Sequence.h" />
     <ClInclude Include="Game2D.h" />
   </ItemGroup>
