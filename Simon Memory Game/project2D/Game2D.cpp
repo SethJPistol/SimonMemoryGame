@@ -3,7 +3,6 @@
 #include "Application.h"
 #include "Texture.h"
 #include "Font.h"
-#include "Input.h"
 
 Game2D::Game2D(const char* title, int width, int height, bool fullscreen) : Game(title, width, height, fullscreen)
 {
@@ -19,7 +18,8 @@ Game2D::Game2D(const char* title, int width, int height, bool fullscreen) : Game
 	m_pLeftArrowFlashTexture = new aie::Texture("./textures/leftArrowFlash.png");
 	m_pDownArrowFlashTexture = new aie::Texture("./textures/downArrowFlash.png");
 	m_pUpArrowFlashTexture = new aie::Texture("./textures/upArrowFlash.png");
-	m_pFont = new aie::Font("./font/consolas.ttf", 24);
+	m_pFontSmall = new aie::Font("./font/consolas.ttf", 24);
+	m_pFontLarge = new aie::Font("./font/consolas.ttf", 44);
 
 	//Create a new sequence
 	m_pDirections = new Sequence();
@@ -27,10 +27,9 @@ Game2D::Game2D(const char* title, int width, int height, bool fullscreen) : Game
 	//Set sequence count and timer to 0
 	nSequenceIterator = 0;
 	nTimer = 0.0f;
-
-	//Start the game with the sequence flashing
-	bIsSequenceFlashing = true;
-	bHasLost = false;
+	
+	//Start the game on the menu
+	m_nState = MENU;
 
 	nScore = 0;
 	nHighScore = 0;
@@ -48,7 +47,8 @@ Game2D::~Game2D()
 	m_pDirections = nullptr;
 
 	//Delete the textures
-	delete m_pFont;
+	delete m_pFontSmall;
+	delete m_pFontLarge;
 	delete m_pRightArrowTexture;
 	delete m_pLeftArrowTexture;
 	delete m_pDownArrowTexture;
@@ -66,234 +66,266 @@ void Game2D::Update(float deltaTime)
 {	
 	aie::Input* input = aie::Input::GetInstance();
 
-	//This adds time to the timer every frame
-	nTimer += deltaTime;
+	assert(m_pDirections);
 
-	//If an arrow just flashed, stop it from flashing again
-	if (nTimer > 0.15f)
+	switch (m_nState)
 	{
-		bIsRightFlashing = false;
-		bIsLeftFlashing = false;
-		bIsDownFlashing = false;
-		bIsUpFlashing = false;
-	}
-
-	//Skip if gameover
-	if (!bHasLost)
-	{
-		//Checks if the sequence is meant to be flashing
-		if (bIsSequenceFlashing)
+	case MENU:
+		if (input->WasKeyPressed(aie::INPUT_KEY_ENTER))
 		{
-			//If end of the sequence
-			if (nSequenceIterator >= m_pDirections->SequenceCount())
-			{
-				nSequenceIterator = 0;
-				bIsSequenceFlashing = false;
-			}
+			m_nState = INITIALPAUSE;
+		}
+		break;
 
-			//Timer check so that it only flashes when another flash is done
-			else if (nTimer > 0.5f)
+	case INITIALPAUSE:
+		if (input->WasKeyPressed(aie::INPUT_KEY_P))
+		{
+			m_nState = FLASHING;
+		}
+		break;
+
+	case PAUSED:
+		if (input->WasKeyPressed(aie::INPUT_KEY_P))
+		{
+			m_nState = PLAYING;
+		}
+		break;
+
+	case FLASHING:
+		//This adds time to the timer every frame
+		nTimer += deltaTime;
+
+		//If an arrow just flashed, stop it from flashing again
+		if (nTimer > 0.15f)
+		{
+			bIsRightFlashing = false;
+			bIsLeftFlashing = false;
+			bIsDownFlashing = false;
+			bIsUpFlashing = false;
+		}
+
+		//If the player presses p, pause
+		if (input->WasKeyPressed(aie::INPUT_KEY_P))
+		{
+			m_nState = INITIALPAUSE;
+		}
+
+		//If end of the sequence
+		if (nSequenceIterator >= m_pDirections->SequenceCount())
+		{
+			nSequenceIterator = 0;
+			m_nState = PLAYING;
+		}
+
+		//Timer check so that it only flashes when another flash is done
+		else if (nTimer > 0.5f)
+		{
+			//Sees which direction is in the current sequence slot
+			switch ((*m_pDirections)[nSequenceIterator])
 			{
-				switch ((*m_pDirections)[nSequenceIterator])
-				{
-					//Right
-				case 1:
-					//Animate the sprite
-					bIsRightFlashing = true;
-					//Reset the flash timer
-					nTimer = 0.0f;
-					++nSequenceIterator;
-					break;
-					//Left
-				case 2:
-					//Animate the sprite
-					bIsLeftFlashing = true;
-					//Reset the flash timer
-					nTimer = 0.0f;
-					++nSequenceIterator;
-					break;
-					//Down
-				case 3:
-					//Animate the sprite
-					bIsDownFlashing = true;
-					//Reset the flash timer
-					nTimer = 0.0f;
-					++nSequenceIterator;
-					break;
-					//Up
-				case 4:
-					//Animate the sprite
-					bIsUpFlashing = true;
-					//Reset the flash timer
-					nTimer = 0.0f;
-					++nSequenceIterator;
-					break;
-				}
+			case RIGHT:
+				//Animate the sprite
+				bIsRightFlashing = true;
+				//Reset the flash timer
+				nTimer = 0.0f;
+				++nSequenceIterator;
+				break;
+			case LEFT:
+				//Animate the sprite
+				bIsLeftFlashing = true;
+				//Reset the flash timer
+				nTimer = 0.0f;
+				++nSequenceIterator;
+				break;
+			case DOWN:
+				//Animate the sprite
+				bIsDownFlashing = true;
+				//Reset the flash timer
+				nTimer = 0.0f;
+				++nSequenceIterator;
+				break;
+			case UP:
+				//Animate the sprite
+				bIsUpFlashing = true;
+				//Reset the flash timer
+				nTimer = 0.0f;
+				++nSequenceIterator;
+				break;
 			}
 		}
-		//Sequence isn't flashing, so allow input
-		else
+		break;
+
+	case PLAYING:
+		//This adds time to the timer every frame
+		nTimer += deltaTime;
+
+		//If an arrow just flashed, stop it from flashing again
+		if (nTimer > 0.15f)
 		{
-			//If right arrow key, check if correct
-			if (input->WasKeyPressed(aie::INPUT_KEY_RIGHT))
+			bIsRightFlashing = false;
+			bIsLeftFlashing = false;
+			bIsDownFlashing = false;
+			bIsUpFlashing = false;
+		}
+
+		//Check if they press r to restart
+		RestartGame(input);
+
+		//If the player presses p, pause
+		if (input->WasKeyPressed(aie::INPUT_KEY_P))
+		{
+			m_nState = PAUSED;
+		}
+
+		//If right arrow key, check if correct
+		if (input->WasKeyPressed(aie::INPUT_KEY_RIGHT))
+		{
+			bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, RIGHT);
+
+			if (bCorrectDirection)
 			{
-				bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, RIGHT);
+				//Animate the sprite
+				bIsRightFlashing = true;
+				//Reset the flash timer
+				nTimer = 0.0f;
 
-				if (bCorrectDirection)
+				++nSequenceIterator;
+
+				//If end of the sequence
+				if (nSequenceIterator >= m_pDirections->SequenceCount())
 				{
-					//Animate the sprite
-					bIsRightFlashing = true;
-					//Reset the flash timer
-					nTimer = 0.0f;
-
-					++nSequenceIterator;
-
-					//If end of the sequence
-					if (nSequenceIterator >= m_pDirections->SequenceCount())
-					{
-						//Reset the iterator
-						nSequenceIterator = 0;
-						//Add a new direction to the sequence
-						m_pDirections->AddDirection();
-						//Start the new sequence flashes here
-						bIsSequenceFlashing = true;
-						//Add to score
-						++nScore;
-					}
-				}
-				else
-				{
-					//Gameover
-					bHasLost = true;
+					//Reset the iterator
+					nSequenceIterator = 0;
+					//Add a new direction to the sequence
+					m_pDirections->AddDirection();
+					//Start the new sequence flashes
+					m_nState = FLASHING;
+					//Add to score
+					++nScore;
 				}
 			}
-
-			//If left arrow key, check if correct
-			if (input->WasKeyPressed(aie::INPUT_KEY_LEFT))
+			else
 			{
-				bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, LEFT);
-
-				if (bCorrectDirection)
-				{
-					//Animate the sprite
-					bIsLeftFlashing = true;
-					//Reset the flash timer
-					nTimer = 0.0f;
-
-					++nSequenceIterator;
-
-					//If end of the sequence
-					if (nSequenceIterator >= m_pDirections->SequenceCount())
-					{
-						//Reset the iterator
-						nSequenceIterator = 0;
-						//Add a new direction to the sequence
-						m_pDirections->AddDirection();
-						//Start the new sequence flashes here
-						bIsSequenceFlashing = true;
-						//Add to score
-						++nScore;
-					}
-				}
-				else
-				{
-					//Gameover
-					bHasLost = true;
-				}
-			}
-
-			//If down arrow key, check if correct
-			if (input->WasKeyPressed(aie::INPUT_KEY_DOWN))
-			{
-				bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, DOWN);
-
-				if (bCorrectDirection)
-				{
-					//Animate the sprite
-					bIsDownFlashing = true;
-					//Reset the flash timer
-					nTimer = 0.0f;
-
-					++nSequenceIterator;
-
-					//If end of the sequence
-					if (nSequenceIterator >= m_pDirections->SequenceCount())
-					{
-						//Reset the iterator
-						nSequenceIterator = 0;
-						//Add a new direction to the sequence
-						m_pDirections->AddDirection();
-						//Start the new sequence flashes here
-						bIsSequenceFlashing = true;
-						//Add to score
-						++nScore;
-					}
-				}
-				else
-				{
-					//Gameover
-					bHasLost = true;
-				}
-			}
-
-			//If up arrow key, check if correct
-			if (input->WasKeyPressed(aie::INPUT_KEY_UP))
-			{
-				bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, UP);
-
-				if (bCorrectDirection)
-				{
-					//Animate the sprite
-					bIsUpFlashing = true;
-					//Reset the flash timer
-					nTimer = 0.0f;
-
-					++nSequenceIterator;
-
-					//If end of the sequence
-					if (nSequenceIterator >= m_pDirections->SequenceCount())
-					{
-						//Reset the iterator
-						nSequenceIterator = 0;
-						//Add a new direction to the sequence
-						m_pDirections->AddDirection();
-						//Start the new sequence flashes here
-						bIsSequenceFlashing = true;
-						//Add to score
-						++nScore;
-					}
-				}
-				else
-				{
-					//Gameover
-					bHasLost = true;
-				}
+				m_nState = GAMEOVER;
 			}
 		}
+
+		//If left arrow key, check if correct
+		if (input->WasKeyPressed(aie::INPUT_KEY_LEFT))
+		{
+			bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, LEFT);
+
+			if (bCorrectDirection)
+			{
+				//Animate the sprite
+				bIsLeftFlashing = true;
+				//Reset the flash timer
+				nTimer = 0.0f;
+
+				++nSequenceIterator;
+
+				//If end of the sequence
+				if (nSequenceIterator >= m_pDirections->SequenceCount())
+				{
+					//Reset the iterator
+					nSequenceIterator = 0;
+					//Add a new direction to the sequence
+					m_pDirections->AddDirection();
+					//Start the new sequence flashes
+					m_nState = FLASHING;
+					//Add to score
+					++nScore;
+				}
+			}
+			else
+			{
+				m_nState = GAMEOVER;
+			}
+		}
+
+		//If down arrow key, check if correct
+		if (input->WasKeyPressed(aie::INPUT_KEY_DOWN))
+		{
+			bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, DOWN);
+
+			if (bCorrectDirection)
+			{
+				//Animate the sprite
+				bIsDownFlashing = true;
+				//Reset the flash timer
+				nTimer = 0.0f;
+
+				++nSequenceIterator;
+
+				//If end of the sequence
+				if (nSequenceIterator >= m_pDirections->SequenceCount())
+				{
+					//Reset the iterator
+					nSequenceIterator = 0;
+					//Add a new direction to the sequence
+					m_pDirections->AddDirection();
+					//Start the new sequence flashes
+					m_nState = FLASHING;
+					//Add to score
+					++nScore;
+				}
+			}
+			else
+			{
+				m_nState = GAMEOVER;
+			}
+		}
+
+		//If up arrow key, check if correct
+		if (input->WasKeyPressed(aie::INPUT_KEY_UP))
+		{
+			bool bCorrectDirection = m_pDirections->CheckDirection(nSequenceIterator, UP);
+
+			if (bCorrectDirection)
+			{
+				//Animate the sprite
+				bIsUpFlashing = true;
+				//Reset the flash timer
+				nTimer = 0.0f;
+
+				++nSequenceIterator;
+
+				//If end of the sequence
+				if (nSequenceIterator >= m_pDirections->SequenceCount())
+				{
+					//Reset the iterator
+					nSequenceIterator = 0;
+					//Add a new direction to the sequence
+					m_pDirections->AddDirection();
+					//Start the new sequence flashes
+					m_nState = FLASHING;
+					//Add to score
+					++nScore;
+				}
+			}
+			else
+			{
+				m_nState = GAMEOVER;
+			}
+		}
+
+		//Update the high score
+		if (nScore > nHighScore)
+		{
+			nHighScore = nScore;
+		}
+		break;
+
+	case GAMEOVER:
+		//Check if they press r to restart
+		RestartGame(input);
+		break;
+
+	default:
+		assert(0);
+		break;
 	}
 
-	//Update the high score
-	if (nScore > nHighScore)
-	{
-		nHighScore = nScore;
-	}
-
-	//Restart the game if r is pressed
-	if (input->WasKeyPressed(aie::INPUT_KEY_R))
-	{
-		bHasLost = false;
-		bIsRightFlashing = false;
-		bIsLeftFlashing = false;
-		bIsDownFlashing = false;
-		bIsUpFlashing = false;
-		bIsSequenceFlashing = true;
-		nTimer = 0.0f;
-		nSequenceIterator = 0;
-		nScore = 0;
-		m_pDirections->SequenceClear();
-		m_pDirections->AddDirection();
-	}
-	
 	// Exit the application if escape is pressed.
 	if (input->IsKeyDown(aie::INPUT_KEY_ESCAPE))
 	{
@@ -304,6 +336,17 @@ void Game2D::Update(float deltaTime)
 
 void Game2D::Draw()
 {
+	assert(m_pRightArrowTexture);
+	assert(m_pLeftArrowTexture);
+	assert(m_pDownArrowTexture);
+	assert(m_pUpArrowTexture);
+	assert(m_pRightArrowFlashTexture);
+	assert(m_pLeftArrowFlashTexture);
+	assert(m_pDownArrowFlashTexture);
+	assert(m_pUpArrowFlashTexture);
+	assert(m_pFontSmall);
+	assert(m_pFontLarge);
+
 	aie::Application* application = aie::Application::GetInstance();
 	float time = application->GetTime();
 
@@ -313,68 +356,191 @@ void Game2D::Draw()
 	// Prepare the renderer. This must be called before any sprites are drawn.
 	m_2dRenderer->Begin();
 
-	// Draw a thin line.
-	//m_2dRenderer->DrawLine(150.0f, 400.0f, 250.0f, 500.0f, 2.0f);
-
-	// Draw a moving purple circle.
-	//m_2dRenderer->SetRenderColour(1.0f, 0.0f, 1.0f, 1.0f);
-	//m_2dRenderer->DrawCircle(sin(time) * 100.0f + 450.0f, 200.0f, 50.0f);
-
-	// Draw a rotating sprite with no texture, coloured yellow.
-	//m_2dRenderer->SetRenderColour(1.0f, 1.0f, 0.0f, 1.0f);
-	//m_2dRenderer->DrawSprite(nullptr, 700.0f, 200.0f, 50.0f, 50.0f, time);
-	//m_2dRenderer->SetRenderColour(1.0f, 1.0f, 1.0f, 1.0f);
-
-	// Demonstrate animation.
-	//float animSpeed = 10.0f;
-	//int frame = ((int)(time * animSpeed) % 6);
-	//float size = 1.0f / 6.0f;
-	//m_2dRenderer->SetUVRect(frame * size, 0.0f, size, 1.0f);
-	//m_2dRenderer->DrawSprite(m_texture, 900.0f, 200.0f, 100.0f, 100.0f);
-	//m_2dRenderer->SetUVRect(0.0f, 0.0f, 1.0f, 1.0f);
-	
-	//HUD text
 	float fWindowHeight = (float)application->GetWindowHeight();
-	//char fps[32];
 	char score[3];
 	char highscore[3];
-	//sprintf_s(fps, 32, "FPS: %i", application->GetFPS());
-	sprintf_s(score, 3, "%i", nScore);
-	sprintf_s(highscore, 3, "%i", nHighScore);
-	//m_2dRenderer->DrawText2D(m_pFont, fps, 15.0f, fWindowHeight - 32.0f);
-	//m_2dRenderer->DrawText2D(m_pFont, "PRESS ANY KEY TO BEGIN", 65.0f, fWindowHeight - 64.0f);
-	m_2dRenderer->DrawText2D(m_pFont, "HIGH SCORE:", 290.0f, fWindowHeight - 50.0f);
-	m_2dRenderer->DrawText2D(m_pFont, highscore, 350.0f, fWindowHeight - 75.0f);
-	m_2dRenderer->DrawText2D(m_pFont, "SCORE:", 325.0f, fWindowHeight - 325.0f);
-	m_2dRenderer->DrawText2D(m_pFont, score, 350.0f, fWindowHeight - 350.0f);
 
-	if (bHasLost)
+	switch (m_nState)
 	{
-		m_2dRenderer->DrawText2D(m_pFont, "YOU HAVE LOST", 112.0f, fWindowHeight - 75.0f);
-		m_2dRenderer->DrawText2D(m_pFont, "PRESS R TO RESTART", 85.0f, fWindowHeight - 100.0f);
-	}
+	case MENU:
+		m_2dRenderer->DrawText2D(m_pFontLarge, "SIMON MEMORY GAME", 15.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "-PRESS ENTER TO PLAY", 15.0f, fWindowHeight - 150.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "-PRESS ESC TO QUIT", 15.0f, fWindowHeight - 200.0f);
+		break;
 
-	//Arrow sprites
-	if (bIsRightFlashing)
-		m_2dRenderer->DrawSprite(m_pRightArrowFlashTexture, 325.0f, fWindowHeight - 200.0f);
-	else
+	case INITIALPAUSE:
+		//HUD
+		m_2dRenderer->DrawText2D(m_pFontSmall, "THE GAME IS PAUSED", 85.0f, fWindowHeight - 425.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "PRESS P TO CONTINUE", 80.0f, fWindowHeight - 450.0f);
+		sprintf_s(score, 3, "%i", nScore);
+		sprintf_s(highscore, 3, "%i", nHighScore);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "HIGH SCORE:", 290.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, highscore, 350.0f, fWindowHeight - 75.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "SCORE:", 25.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, score, 50.0f, fWindowHeight - 75.0f);
+
+		//Arrow sprites
+		if (bIsRightFlashing)
+			m_2dRenderer->DrawSprite(m_pRightArrowFlashTexture, 325.0f, fWindowHeight - 200.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pRightArrowTexture, 325.0f, fWindowHeight - 200.0f);
+
+		if (bIsLeftFlashing)
+			m_2dRenderer->DrawSprite(m_pLeftArrowFlashTexture, 75.0f, fWindowHeight - 200.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pLeftArrowTexture, 75.0f, fWindowHeight - 200.0f);
+
+		if (bIsDownFlashing)
+			m_2dRenderer->DrawSprite(m_pDownArrowFlashTexture, 200.0f, fWindowHeight - 325.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pDownArrowTexture, 200.0f, fWindowHeight - 325.0f);
+
+		if (bIsUpFlashing)
+			m_2dRenderer->DrawSprite(m_pUpArrowFlashTexture, 200.0f, fWindowHeight - 75.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pUpArrowTexture, 200.0f, fWindowHeight - 75.0f);
+
+		break;
+
+	case PAUSED:
+		//HUD
+		m_2dRenderer->DrawText2D(m_pFontSmall, "THE GAME IS PAUSED", 85.0f, fWindowHeight - 425.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "PRESS P TO CONTINUE", 80.0f, fWindowHeight - 450.0f);
+		sprintf_s(score, 3, "%i", nScore);
+		sprintf_s(highscore, 3, "%i", nHighScore);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "HIGH SCORE:", 290.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, highscore, 350.0f, fWindowHeight - 75.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "SCORE:", 25.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, score, 50.0f, fWindowHeight - 75.0f);
+
+		//Arrow sprites
+		if (bIsRightFlashing)
+			m_2dRenderer->DrawSprite(m_pRightArrowFlashTexture, 325.0f, fWindowHeight - 200.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pRightArrowTexture, 325.0f, fWindowHeight - 200.0f);
+
+		if (bIsLeftFlashing)
+			m_2dRenderer->DrawSprite(m_pLeftArrowFlashTexture, 75.0f, fWindowHeight - 200.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pLeftArrowTexture, 75.0f, fWindowHeight - 200.0f);
+
+		if (bIsDownFlashing)
+			m_2dRenderer->DrawSprite(m_pDownArrowFlashTexture, 200.0f, fWindowHeight - 325.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pDownArrowTexture, 200.0f, fWindowHeight - 325.0f);
+
+		if (bIsUpFlashing)
+			m_2dRenderer->DrawSprite(m_pUpArrowFlashTexture, 200.0f, fWindowHeight - 75.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pUpArrowTexture, 200.0f, fWindowHeight - 75.0f);
+
+		break;
+
+	case FLASHING:
+		//HUD
+		sprintf_s(score, 3, "%i", nScore);
+		sprintf_s(highscore, 3, "%i", nHighScore);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "HIGH SCORE:", 290.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, highscore, 350.0f, fWindowHeight - 75.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "SCORE:", 25.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, score, 50.0f, fWindowHeight - 75.0f);
+
+		//Arrow sprites
+		if (bIsRightFlashing)
+			m_2dRenderer->DrawSprite(m_pRightArrowFlashTexture, 325.0f, fWindowHeight - 200.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pRightArrowTexture, 325.0f, fWindowHeight - 200.0f);
+
+		if (bIsLeftFlashing)
+			m_2dRenderer->DrawSprite(m_pLeftArrowFlashTexture, 75.0f, fWindowHeight - 200.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pLeftArrowTexture, 75.0f, fWindowHeight - 200.0f);
+
+		if (bIsDownFlashing)
+			m_2dRenderer->DrawSprite(m_pDownArrowFlashTexture, 200.0f, fWindowHeight - 325.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pDownArrowTexture, 200.0f, fWindowHeight - 325.0f);
+
+		if (bIsUpFlashing)
+			m_2dRenderer->DrawSprite(m_pUpArrowFlashTexture, 200.0f, fWindowHeight - 75.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pUpArrowTexture, 200.0f, fWindowHeight - 75.0f);
+
+		break;
+
+	case PLAYING:
+		//HUD
+		sprintf_s(score, 3, "%i", nScore);
+		sprintf_s(highscore, 3, "%i", nHighScore);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "HIGH SCORE:", 290.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, highscore, 350.0f, fWindowHeight - 75.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "SCORE:", 25.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, score, 50.0f, fWindowHeight - 75.0f);
+
+		//Arrow sprites
+		if (bIsRightFlashing)
+			m_2dRenderer->DrawSprite(m_pRightArrowFlashTexture, 325.0f, fWindowHeight - 200.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pRightArrowTexture, 325.0f, fWindowHeight - 200.0f);
+
+		if (bIsLeftFlashing)
+			m_2dRenderer->DrawSprite(m_pLeftArrowFlashTexture, 75.0f, fWindowHeight - 200.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pLeftArrowTexture, 75.0f, fWindowHeight - 200.0f);
+
+		if (bIsDownFlashing)
+			m_2dRenderer->DrawSprite(m_pDownArrowFlashTexture, 200.0f, fWindowHeight - 325.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pDownArrowTexture, 200.0f, fWindowHeight - 325.0f);
+
+		if (bIsUpFlashing)
+			m_2dRenderer->DrawSprite(m_pUpArrowFlashTexture, 200.0f, fWindowHeight - 75.0f);
+		else
+			m_2dRenderer->DrawSprite(m_pUpArrowTexture, 200.0f, fWindowHeight - 75.0f);
+
+		break;
+
+	case GAMEOVER:
+		//HUD
+		m_2dRenderer->DrawText2D(m_pFontSmall, "YOU HAVE LOST", 118.0f, fWindowHeight - 425.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "PRESS R TO RESTART", 91.0f, fWindowHeight - 450.0f);
+		sprintf_s(score, 3, "%i", nScore);
+		sprintf_s(highscore, 3, "%i", nHighScore);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "HIGH SCORE:", 290.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, highscore, 350.0f, fWindowHeight - 75.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, "SCORE:", 25.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->DrawText2D(m_pFontSmall, score, 50.0f, fWindowHeight - 75.0f);
+
+		//Arrow sprites
 		m_2dRenderer->DrawSprite(m_pRightArrowTexture, 325.0f, fWindowHeight - 200.0f);
-
-	if (bIsLeftFlashing)
-		m_2dRenderer->DrawSprite(m_pLeftArrowFlashTexture, 75.0f, fWindowHeight - 200.0f);
-	else
 		m_2dRenderer->DrawSprite(m_pLeftArrowTexture, 75.0f, fWindowHeight - 200.0f);
-
-	if (bIsDownFlashing)
-		m_2dRenderer->DrawSprite(m_pDownArrowFlashTexture, 200.0f, fWindowHeight - 325.0f);
-	else
 		m_2dRenderer->DrawSprite(m_pDownArrowTexture, 200.0f, fWindowHeight - 325.0f);
-
-	if (bIsUpFlashing)
-		m_2dRenderer->DrawSprite(m_pUpArrowFlashTexture, 200.0f, fWindowHeight - 75.0f);
-	else
 		m_2dRenderer->DrawSprite(m_pUpArrowTexture, 200.0f, fWindowHeight - 75.0f);
+		break;
+
+	default:
+		assert(0);
+		break;
+	}
 	
 	// Done drawing sprites. Must be called at the end of the Draw().
 	m_2dRenderer->End();
+}
+
+void Game2D::RestartGame(aie::Input* input)
+{
+	if (input->WasKeyPressed(aie::INPUT_KEY_R))
+	{
+		assert(m_pDirections);
+		m_nState = FLASHING;
+		bIsRightFlashing = false;
+		bIsLeftFlashing = false;
+		bIsDownFlashing = false;
+		bIsUpFlashing = false;
+		nTimer = 0.0f;
+		nSequenceIterator = 0;
+		nScore = 0;
+		m_pDirections->SequenceClear();
+		m_pDirections->AddDirection();
+	}
 }

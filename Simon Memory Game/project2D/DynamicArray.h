@@ -1,5 +1,6 @@
 #pragma once
 #include <Windows.h>
+#include <assert.h>
 
 
 template<typename T>
@@ -63,6 +64,7 @@ public:
 
 	void Insert(int nIndex, T data)
 	{
+		assert(m_pData);
 		++m_nUsedCount;
 		//Check if a resize is needed
 		Resize();
@@ -78,11 +80,13 @@ public:
 
 	void PushFront(T data)
 	{
+		assert(m_pData);
 		Insert(0, data);
 	}
 
 	void PushBack(T data)
 	{
+		assert(m_pData);
 		//Check if a resize is needed
 		Resize();
 
@@ -92,21 +96,25 @@ public:
 
 	T First()
 	{
+		assert(m_pData);
 		return m_pData[0];
 	}
 
 	T Last()
 	{
+		assert(m_pData);
 		return m_pData[m_nUsedCount - 1];
 	}
 
 	int Count()
 	{
+		assert(m_pData);
 		return m_nUsedCount;
 	}
 
 	void Erase(int nIndex)
 	{
+		assert(m_pData);
 		//Shift any data after the erase point to the left by 1
 		for (int i = nIndex; i < m_nUsedCount; ++i)
 		{
@@ -117,6 +125,7 @@ public:
 
 	void Remove(int nValue)
 	{
+		assert(m_pData);
 		//Search for the value in the array
 		for (int i = 0; i < m_nUsedCount; ++i)
 		{
@@ -130,6 +139,7 @@ public:
 
 	void Clear()
 	{
+		assert(m_pData);
 		//Repeats until used count is 0
 		while (m_nUsedCount)
 		{
@@ -139,11 +149,13 @@ public:
 
 	void PopBack()
 	{
+		assert(m_pData);
 		--m_nUsedCount;
 	}
 
 	void PopFront()
 	{
+		assert(m_pData);
 		//Shift any data after the erase point to the left by 1
 		for (int i = 0; i < m_nUsedCount; ++i)
 		{
@@ -154,11 +166,13 @@ public:
 
 	bool Empty()
 	{
+		assert(m_pData);
 		return m_nUsedCount <= 0;
 	}
 
 	void Print()
 	{
+		assert(m_pData);
 		for (int i = 0; i < m_nUsedCount; ++i)
 		{
 			std::cout << m_pData[i] << std::endl;
@@ -167,11 +181,13 @@ public:
 
 	int GetSize()
 	{
+		assert(m_pData);
 		return m_nUsedCount;
 	}
 
 	T& operator[](int nIndex)
 	{
+		assert(m_pData);
 		return m_pData[nIndex];
 	}
 
@@ -181,6 +197,7 @@ private:
 
 	void Resize()
 	{
+		assert(m_pData);
 		//If out of space
 		if (m_nUsedCount >= m_nTotalSize)
 		{

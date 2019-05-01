@@ -18,7 +18,7 @@ int main()
 	srand((unsigned int)time(0));
 
 	//Create the Application
-	Game2D* game = new Game2D("AIE", 440, 500, false);
+	Game2D* game = new Game2D("AIE", 440, 470, false);
 
 	//Run the game loop
 	game->Run();

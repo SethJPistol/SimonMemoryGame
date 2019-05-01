@@ -1,8 +1,9 @@
 #pragma once
 #include <iostream>
+#include <assert.h>
 #include "DynamicArray.h"
 
-enum Directions
+enum eDirections
 	{
 		RIGHT	= 1,
 		LEFT	= 2,

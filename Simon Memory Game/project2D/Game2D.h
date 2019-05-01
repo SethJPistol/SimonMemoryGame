@@ -1,8 +1,19 @@
 #pragma once
 
+#include <assert.h>
 #include "Game.h"
 #include "Renderer2D.h"
 #include "Sequence.h"
+#include "Input.h"
+
+enum eState {
+	MENU = 1,
+	INITIALPAUSE = 2,
+	PAUSED = 3,
+	FLASHING = 4,
+	PLAYING = 5,
+	GAMEOVER = 6,
+};
 
 class Game2D : public aie::Game
 {
@@ -12,6 +23,9 @@ public:
 
 	virtual void Update(float deltaTime);
 	virtual void Draw();
+
+	//Restart the game if r is pressed
+	void RestartGame(aie::Input* input);
 
 protected:
 	aie::Renderer2D*	m_2dRenderer;
@@ -25,14 +39,15 @@ protected:
 	aie::Texture*		m_pLeftArrowFlashTexture;
 	aie::Texture*		m_pDownArrowFlashTexture;
 	aie::Texture*		m_pUpArrowFlashTexture;
-	aie::Font*			m_pFont;
+	aie::Font*			m_pFontSmall;
+	aie::Font*			m_pFontLarge;
 
 	Sequence* m_pDirections;
 
+	int m_nState;
+
 	int nSequenceIterator;
 	float nTimer;
-	bool bIsSequenceFlashing;
-	bool bHasLost;
 
 	int nScore;
 	int nHighScore;
