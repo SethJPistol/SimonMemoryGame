@@ -65,6 +65,8 @@ Game2D::~Game2D()
 void Game2D::Update(float deltaTime)
 {	
 	aie::Input* input = aie::Input::GetInstance();
+	aie::Application* application = aie::Application::GetInstance();
+	float fWindowHeight = (float)application->GetWindowHeight();
 
 	assert(m_pDirections);
 
@@ -72,6 +74,15 @@ void Game2D::Update(float deltaTime)
 	{
 	case MENU:
 		if (input->WasKeyPressed(aie::INPUT_KEY_ENTER))
+		{
+			m_nState = INITIALPAUSE;
+		}
+		//Check if the play button has been clicked
+		if (input->WasMouseButtonPressed(0) 
+			&& input->GetMouseX() < 283 
+			&& input->GetMouseX() > 13 
+			&& input->GetMouseY() < (fWindowHeight - 128) 
+			&& input->GetMouseY() > (fWindowHeight - 158))
 		{
 			m_nState = INITIALPAUSE;
 		}
@@ -348,7 +359,6 @@ void Game2D::Draw()
 	assert(m_pFontLarge);
 
 	aie::Application* application = aie::Application::GetInstance();
-	float time = application->GetTime();
 
 	// Wipe the screen to clear away the previous frame.
 	application->ClearScreen();
@@ -364,6 +374,9 @@ void Game2D::Draw()
 	{
 	case MENU:
 		m_2dRenderer->DrawText2D(m_pFontLarge, "SIMON MEMORY GAME", 15.0f, fWindowHeight - 50.0f);
+		m_2dRenderer->SetRenderColour(0, 0, 150);
+		m_2dRenderer->DrawBox(148.0f, fWindowHeight - 143.0f, 270, 30);
+		m_2dRenderer->SetRenderColour(255, 255, 255);
 		m_2dRenderer->DrawText2D(m_pFontSmall, "-PRESS ENTER TO PLAY", 15.0f, fWindowHeight - 150.0f);
 		m_2dRenderer->DrawText2D(m_pFontSmall, "-PRESS ESC TO QUIT", 15.0f, fWindowHeight - 200.0f);
 		break;
