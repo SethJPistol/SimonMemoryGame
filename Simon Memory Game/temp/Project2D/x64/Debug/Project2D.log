@@ -1,5 +1,2 @@
-﻿  Sequence.cpp
-  Game2D.cpp
-  main.cpp
-  Generating Code...
-  Project2D.vcxproj -> C:\Users\s191070\Desktop\Seth's Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\temp\Project2D\x64\Debug\Project2D.exe
+﻿LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Project2D.vcxproj -> C:\Users\s191070\Desktop\Seths Work\Code Design and Data Structures\Code Design and Data Structure Assignments\SimonMemoryGame\trunk\Simon Memory Game\temp\Project2D\x64\Debug\Project2D.exe

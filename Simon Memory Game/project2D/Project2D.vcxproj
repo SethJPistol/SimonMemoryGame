@@ -171,14 +171,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+<<<<<<< .mine
+||||||| .r8
+    <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Level.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Menu.cpp" />
+    <ClCompile Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Sequence.cpp" />
+=======
     <ClCompile Include="Sequence.cpp" />
+>>>>>>> .r10
     <ClCompile Include="Game2D.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Sequence.cpp" />
   </ItemGroup>
   <ItemGroup>
+<<<<<<< .mine
+    <ClInclude Include="DynamicArray.h" />
+||||||| .r8
+    <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\project2D\DynamicArray.h" />
+    <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Level.h" />
+    <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Menu.h" />
+    <ClInclude Include="..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\SimonMemoryGame\trunk\Simon Memory Game\Project2D\Sequence.h" />
+=======
     <ClInclude Include="..\..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\Code Design and Data Structure Assignments\SimonMemoryGame\trunk\Simon Memory Game\project2D\DynamicArray.h" />
     <ClInclude Include="..\..\..\..\..\..\..\Seth%27s Work\Code Design and Data Structures\Code Design and Data Structure Assignments\SimonMemoryGame\trunk\Simon Memory Game\project2D\Sequence.h" />
+>>>>>>> .r10
     <ClInclude Include="Game2D.h" />
+    <ClInclude Include="Sequence.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
